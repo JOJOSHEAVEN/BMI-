@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+</head>
+<body>
+    <h1>BMI Calculator</h1>
+
+    <label for="gender">Gender:</label>
+    <select id="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
+
+    <label for="weight">Weight (kg):</label>
+    <input type="text" id="weight" />
+
+    <label for="height">Height (cm):</label>
+    <input type="text" id="height" />
+
+    <button onclick="calculateBMI()">Calculate BMI</button>
+
+    <h2>Result:</h2>
+    <p id="result"></p>
+
+    <script>
+        function calculateBMI() {
+            var gender = document.getElementById('gender').value;
+            var weight = parseFloat(document.getElementById('weight').value);
+            var height = parseFloat(document.getElementById('height').value) / 100; // Größe in Meter
+
+            if (isNaN(weight) || isNaN(height) || height <= 0 || weight <= 0) {
+                document.getElementById('result').innerHTML = 'Please enter valid values for weight and height.';
+                return;
+            }
+
+            //Anfrage an Spring Boot Backend
+            fetch('/calculateBMI?gender=' + gender + '&weight=' + weight + '&height=' + height)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('result').innerHTML = data;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>
+
